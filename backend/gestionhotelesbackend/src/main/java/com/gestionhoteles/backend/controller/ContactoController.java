@@ -1,0 +1,3 @@
+package com.gestionhoteles.backend.controller;
+import com.gestionhoteles.backend.entity.MensajeContacto; import com.gestionhoteles.backend.service.MensajeContactoService; import jakarta.validation.Valid; import lombok.RequiredArgsConstructor; import org.springframework.http.HttpStatus; import org.springframework.web.bind.annotation.*;
+@RestController @RequestMapping("/api/contacto") @RequiredArgsConstructor public class ContactoController {private final MensajeContactoService service; @PostMapping @ResponseStatus(HttpStatus.CREATED) public MensajeContacto crear(@Valid @RequestBody MensajeContacto mensaje){return service.guardar(mensaje);}}
