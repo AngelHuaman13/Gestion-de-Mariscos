@@ -1,0 +1,44 @@
+name: accion_1_basico_commits
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - '.github/workflows/accion_1_basico_commits.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  basico:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener el codigo
+        uses: actions/checkout@v4
+
+      - name: Comandos basicos
+        run: |
+          echo "Ok"
+          date
+          ls -la
+          echo "Rama actual: ${{ github.ref }}"
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Agregar linea al archivo de registro
+        run: |
+          mkdir -p docs
+          echo "Ejecutado por ${{ github.actor }} el $(date)" >> docs/registro-actions.txt
+
+      - name: Commit
+        run: |
+          git add docs/registro-actions.txt
+          git commit -m "Registro automatico de Actions" || echo "Sin cambios"
+
+      - name: Push
+        run: git push origin HEAD
