@@ -1,0 +1,26 @@
+
+name: accion_2_condicionales_if_bucle_for
+
+on:
+  push:
+    branches:
+      - feature/lufer
+  workflow_dispatch:
+
+jobs:
+  ejercicio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Condicional IF
+        if: github.ref == 'refs/heads/feature/lufer'
+        run: echo "Estamos trabajando en feature/lufer"
+
+      - name: Bucle FOR
+        run: |
+          for carpeta in backend database; do
+            echo "Carpeta del proyecto: $carpeta"
+          done
