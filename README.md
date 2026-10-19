@@ -232,3 +232,4 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más deta
 ---
 
 **¡Hecho con ❤️ para la gestión hotelera!**
+
