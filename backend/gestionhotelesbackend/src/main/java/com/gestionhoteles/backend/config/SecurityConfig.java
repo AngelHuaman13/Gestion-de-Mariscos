@@ -29,6 +29,7 @@ public class SecurityConfig {
                     "/login",
                     "/registro",
                     "/h2-console/**",
+                    "/api/**",
                     "/error"
                 ).permitAll()
                 .anyRequest().permitAll()
