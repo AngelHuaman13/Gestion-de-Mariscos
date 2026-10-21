@@ -1,0 +1,37 @@
+name: accion_4_matriz_os_version
+
+on:
+  push:
+    branches: [feature/diego, dev]
+  workflow_dispatch:
+
+jobs:
+  matriz:
+    name: ${{ matrix.os }} - Java ${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        version: ['21', '25']
+    defaults:
+      run:
+        working-directory: backend/gestionhotelesbackend
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java ${{ matrix.version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.version }}
+
+      - name: Mostrar combinacion de la matriz
+        run: |
+          echo "Sistema operativo: ${{ matrix.os }} (${{ runner.os }})"
+          echo "Version de Java: ${{ matrix.version }}"
+          java -version
+
+      - name: Compilar backend
+        run: mvn -B clean compile
