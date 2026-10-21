@@ -1,21 +1,25 @@
-#  Gestión de Hoteles
+# Rinconcito Marino – Gestión de Mariscos
 
-Un sistema completo de gestión hotelera desarrollado con **Spring Boot** que permite administrar reservas, huéspedes, habitaciones y más.
+Aplicación web para la venta de mariscos y platos preparados, desarrollada con **Spring Boot**. Permite mostrar un catálogo de productos, armar un carrito de compras y enviar pedidos, además de un formulario de contacto y un acceso de administrador.
 
-Accede a la aplicación en línea: https://gestion-de-hoteles-2.onrender.com/
-
-##  Descripción del Proyecto
-
-Esta aplicación proporciona una solución integral para la administración de hoteles, permitiendo:
-- ✅ Gestión de habitaciones y categorías
-- ✅ Administración de reservas y check-in/check-out
-- ✅ Control de huéspedes
-- ✅ Generación de reportes
-- ✅ Sistema de usuarios y permisos
+> *Del mar a tu mesa, frescura garantizada.* – Lima, Perú
 
 ---
 
-##  Equipo de Desarrollo
+## Descripción del Proyecto
+
+La aplicación ofrece:
+
+- ✅ Catálogo de productos (mariscos y platos preparados)
+- ✅ Carrito de compras con resumen y total
+- ✅ Pedidos con datos del cliente y tipo de entrega (Delivery o Recojo en tienda)
+- ✅ Formulario de contacto
+- ✅ Carga inicial de productos al arrancar la aplicación
+- 🚧 Login de administrador (en desarrollo)
+
+---
+
+## Equipo de Desarrollo
 
 | Integrante | GitHub | Rol |
 |-----------|--------|-----|
@@ -27,209 +31,183 @@ Esta aplicación proporciona una solución integral para la administración de h
 
 ---
 
-##  Código Compartido (Gists)
-
-### Entidades principales
-- **HotelController.java** → [Ver Gist](https://gist.github.com/Ashi-Games/0990f54d637def1173ef1e2202d880dc) (Ashi-Games)
-- **EntityHotel.java** → [Ver Gist](https://gist.github.com/Alex-cyber26/3d5a25f28b23b5bd3c9419bf6d2ad777) (Alex-cyber26)
-- **Habitacion.java** → [Ver Gist](https://gist.github.com/lufer-s/645283ce59619558fa18187c36f097a2) (lufer-s)
-- **HabitacionService.java** → [Ver Gist](https://gist.github.com/lufer-s/b7f59a26a22dea540a2f1fd88eb62027) (lufer-s)
-
----
-
-##  Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 ### Backend
-- **Java 17+**
-- **Spring Boot 3.x** - Framework principal
-- **Spring Data JPA** - Persistencia de datos
-- **Spring Security** - Autenticación y autorización
-- **Spring MVC** - Controladores REST
+- **Java 21**
+- **Spring Boot 3.5** – Framework principal
+- **Spring Data JPA** – Persistencia de datos
+- **Spring Security** – Autenticación y autorización
+- **JWT (jjwt)** – Tokens de sesión
+- **Springdoc OpenAPI** – Documentación de la API
+- **OpenPDF** – Generación de PDF
+- **Lombok** – Reducción de código repetitivo
 
 ### Frontend
-- HTML5
-- CSS3
-- JavaScript / Bootstrap
+- HTML5, CSS3 y JavaScript
+- Bootstrap 5
 - Thymeleaf (plantillas)
 
+### Base de datos
+- **MySQL 8.4** (ejecutado con Docker)
+- **H2** (en memoria, para pruebas locales)
+
 ### Herramientas
-- Maven - Gestor de dependencias
-- Postman - Pruebas de API
-- Git - Control de versiones
+- Maven – Gestor de dependencias
+- Docker y Docker Compose – Contenedores
+- GitHub Actions – Automatización
+- Git y GitHub – Control de versiones
 
 ---
 
-##  Dependencias Principales
+## Requisitos Previos
 
-Las dependencias que usaremos en `pom.xml`:
+Para ejecutar con **Docker** (recomendado):
 
-```xml
-<!-- Spring Boot Web -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
+- **Docker Desktop**
+  ```bash
+  docker --version
+  ```
 
-<!-- Spring Data JPA -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
+Para ejecutar **sin Docker**:
 
-<!-- Spring Security -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security</artifactId>
-</dependency>
-
-<!-- Lombok (reducir código) -->
-<dependency>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <optional>true</optional>
-</dependency>
-
-<!-- Validation -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
-```
-
----
-
-##  Requisitos Previos
-
-Antes de comenzar, asegúrate de tener instalado:
-
-- **Java JDK 17 o superior**
+- **Java JDK 21**
   ```bash
   java -version
   ```
-
-- **Maven 3.6 o superior**
+- **Maven 3.9 o superior**
   ```bash
   mvn -version
   ```
 
-- **Git**
-  ```bash
-  git --version
-  ```
-
 ---
 
-##  Instalación
+## Instalación y Ejecución
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/AngelHuaman13/Gestion-de-Hoteles.git
-cd Gestion-de-Hoteles
+git clone https://github.com/AngelHuaman13/Gestion-de-Mariscos.git
+cd Gestion-de-Mariscos
 ```
 
-### 2. Instalar dependencias
+### 2. Opción A: con Docker (recomendada)
+
+Desde la raíz del proyecto:
 ```bash
-mvn clean install
+docker compose up --build
 ```
 
-### 3. Ejecutar la aplicación
-```bash
-mvn spring-boot:run
-```
+Esto levanta dos contenedores:
+
+| Servicio | Contenedor | Descripción |
+|----------|-----------|-------------|
+| `db` | `gestion-mysql` | Base de datos MySQL 8.4 con volumen para los datos |
+| `backend` | `gestion-hoteles` | Aplicación Spring Boot, construida con el `DockerFile` |
 
 La aplicación estará disponible en: `http://localhost:8080`
 
+Para detenerla:
+```bash
+docker compose down
+```
+
+Para borrar también los datos de la base:
+```bash
+docker compose down -v
+```
+
+### 3. Opción B: sin Docker
+```bash
+cd backend/gestionhotelesbackend
+mvn clean package -DskipTests
+java -jar target/*.jar
+```
+
+Esta opción requiere una base de datos configurada en `application.properties`.
+
 ---
 
-##  Estructura del Proyecto
+## Docker
+
+### DockerFile
+Ubicado en `backend/gestionhotelesbackend/DockerFile`. Construye la imagen en dos etapas:
+
+1. **Compilación:** imagen `maven:3.9-eclipse-temurin-21` que genera el `.jar`.
+2. **Ejecución:** imagen liviana `eclipse-temurin:21-jre` que ejecuta la aplicación en el puerto 8080.
+
+### docker-compose.yaml
+Ubicado en la raíz del proyecto. Define:
+
+- **`db`:** MySQL con un *healthcheck* para confirmar que está listo antes de arrancar el backend.
+- **`backend`:** se construye con el `DockerFile`, espera a que `db` esté saludable y se conecta a ella mediante variables de entorno (`SPRING_DATASOURCE_*`).
+
+---
+
+## GitHub Actions
+
+Los workflows están en `.github/workflows/`. Cada integrante tiene su propia acción:
+
+| Integrante | Workflow | Qué practica |
+|-----------|----------|--------------|
+| Angel Huaman | `accion_1_basico_commits.yml` | Comandos básicos, configuración de Git, commit y push automáticos |
+| Lufer | Acción con `if` y `for` | Condicionales y bucles |
+
+Cada workflow se ejecuta desde la pestaña **Actions → Run workflow**.
+
+---
+
+## Estructura del Proyecto
 
 ```
-Gestion-de-Hoteles/
-├── src/
-│   ├── main/
-│   │   ├── java/com/gestion/
-│   │   │   ├── controller/        # Controladores REST
-│   │   │   ├── service/           # Lógica de negocio
-│   │   │   ├── repository/        # Acceso a datos
-│   │   │   ├── entity/            # Entidades JPA
+Gestion-de-Mariscos/
+├── .github/workflows/             # Acciones de GitHub Actions
+├── backend/gestionhotelesbackend/
+│   ├── src/main/
+│   │   ├── java/com/gestionhoteles/backend/
+│   │   │   ├── config/            # Configuración (CORS, seguridad, datos iniciales)
+│   │   │   ├── controller/        # Controladores
 │   │   │   ├── dto/               # Data Transfer Objects
-│   │   │   └── config/            # Configuración
+│   │   │   ├── entity/            # Entidades JPA
+│   │   │   ├── repository/        # Acceso a datos
+│   │   │   └── service/           # Lógica de negocio
 │   │   └── resources/
 │   │       ├── templates/         # HTML (Thymeleaf)
 │   │       ├── static/            # CSS, JS, imágenes
 │   │       └── application.properties
-│   └── test/
-├── pom.xml                        # Dependencias Maven
-├── README.md
-└── .gitignore
+│   ├── DockerFile
+│   └── pom.xml
+├── database/                      # Scripts de base de datos
+├── docker-compose.yaml
+└── README.md
 ```
 
 ---
 
-##  Endpoints principales
+## Flujo de Trabajo
 
-### Habitaciones
-- `GET /api/habitaciones` - Obtener todas las habitaciones
-- `POST /api/habitaciones` - Crear nueva habitación
-- `GET /api/habitaciones/{id}` - Obtener habitación por ID
-- `PUT /api/habitaciones/{id}` - Actualizar habitación
-- `DELETE /api/habitaciones/{id}` - Eliminar habitación
+- **`main`:** rama estable.
+- **`dev`:** rama de integración del equipo.
+- **`feature/nombre`:** rama de trabajo de cada integrante.
 
-### Reservas
-- `GET /api/reservas` - Obtener todas las reservas
-- `POST /api/reservas` - Crear nueva reserva
-- `GET /api/reservas/{id}` - Obtener reserva por ID
-- `PUT /api/reservas/{id}` - Actualizar reserva
+Los cambios se proponen con **Pull Request** hacia `dev` y se revisan antes de unirse.
+
+1. Crear una rama: `git checkout -b feature/mi-rama`
+2. Hacer commit: `git commit -m "Descripción del cambio"`
+3. Subir la rama: `git push origin feature/mi-rama`
+4. Abrir un Pull Request y pedir revisión a un compañero
 
 ---
 
-##  Fases del Proyecto
+## Contacto
 
-###  Fase 1 (Completada)
-- Git workflow (branches, commits, merges, tags, releases)
-- GitHub Projects (Road Map + Kanban)
-- Estructura base del proyecto
-- Integrantes asignados
-
-###  Fase 2 (Próximo Avance)
-- Configuración de Base de Datos MySQL
-- Entidades JPA completas
-- Repositorios y Services
-- Endpoints REST funcionales
-
----
-
-##  Contribuir
-
-1. Haz un Fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
----
-
-##  Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
-
----
-
-##  Contacto
-
-**Líder del Proyecto:** Angel Oscar Moscoso Huaman  
+**Líder del Proyecto:** Angel Oscar Moscoso Huaman
 **GitHub:** [@AngelHuaman13](https://github.com/AngelHuaman13)
 
 ---
 
-##  Recursos Útiles
+## Recursos Útiles
 
 - [Documentación Spring Boot](https://spring.io/projects/spring-boot)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-- [RESTful API Design](https://restfulapi.net/)
-- [Git Workflow](https://git-scm.com/)
-
----
-
-**¡Hecho con ❤️ para la gestión hotelera!**
-
+- [Documentación de Docker](https://docs.docker.com/)
+- [Documentación de GitHub Actions](https://docs.github.com/actions)
