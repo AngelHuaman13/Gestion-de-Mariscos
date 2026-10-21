@@ -1,5 +1,4 @@
--- Crea la base de datos
-CREATE DATABASE gestion_hoteles CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 
 -- Usa la base de datos
 USE gestion_hoteles;
