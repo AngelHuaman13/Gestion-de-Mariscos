@@ -2,7 +2,7 @@ name: accion_5_needs_cache
 
 on:
   push:
-    branches: [ feature/ashi ]
+    branches: [ feature/ashi, dev]
   workflow_dispatch:
 
 jobs:
