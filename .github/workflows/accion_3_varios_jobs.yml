@@ -1,0 +1,32 @@
+name: accion_3_varios_jobs
+
+on:
+  push:
+    branches:
+      - feature/alex
+  workflow_dispatch:
+
+jobs:
+  job-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Informacion del sistema (Linux)
+        run: |
+          echo "Corriendo en Ubuntu"
+          uname -a
+          ls -la
+
+  job-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Informacion del sistema (Windows)
+        shell: pwsh
+        run: |
+          Write-Host "Corriendo en Windows"
+          Get-ChildItem

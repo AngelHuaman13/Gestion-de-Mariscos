@@ -295,4 +295,31 @@ button:hover {
     .contenedorTitle {
         width: 100%;
     }
+}/* Imágenes de las tarjetas de servicio conservando el tema actual */
+.service-img { height: 190px; object-fit: cover; }
+.card .card-body p { color: #5b7479; }
+#adminSection .form-control, #adminSection .form-select, #contacto .form-control { background: #fff !important; border: 1px solid #cedde0 !important; }
+#adminSection .form-control:focus, #contacto .form-control:focus { background: #fff !important; box-shadow: 0 0 0 .2rem rgba(6,174,213,.18) !important; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.contenedorHover .btn-chalet { position: relative; z-index: 1; }
+
+
+/* Barra de búsqueda: texto oscuro al escribir */
+.nav-search-input {
+  color: #0b4f6c;
+  background: #ffffff;
+  border: none;
+  outline: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  min-width: 220px;
+}
+
+.nav-search-input::placeholder {
+  color: #6b7c85;
+  opacity: 1;
+}
+
+.nav-search-input:focus {
+  box-shadow: 0 0 0 2px #00b4d8;
 }
