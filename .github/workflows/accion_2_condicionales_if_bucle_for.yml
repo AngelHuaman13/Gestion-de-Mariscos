@@ -7,9 +7,6 @@ on:
       - feature/lufer
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   ejercicio:
     runs-on: ubuntu-latest
@@ -18,36 +15,12 @@ jobs:
       - name: Descargar codigo
         uses: actions/checkout@v4
 
-      - name: Verificar rama
-        run: |
-          echo "Rama actual: $GITHUB_REF_NAME"
-          if [ "$GITHUB_REF_NAME" = "feature/lufer" ]; then
-            echo "Estamos trabajando en feature/lufer"
-          else
-            echo "La ejecucion es manual desde otra rama"
-          fi
+      - name: Condicional IF
+        if: github.ref == 'refs/heads/feature/lufer'
+        run: echo "Estamos trabajando en feature/lufer"
 
-      - name: Verificar carpetas del proyecto
+      - name: Bucle FOR
         run: |
           for carpeta in backend database; do
-            if [ -d "$carpeta" ]; then
-              echo "OK: existe la carpeta $carpeta"
-            else
-              echo "ERROR: no existe la carpeta $carpeta"
-              exit 1
-            fi
+            echo "Carpeta del proyecto: $carpeta"
           done
-
-      - name: Verificar archivos Docker
-        run: |
-          for archivo in Dockerfile docker-compose.yml; do
-            if [ -f "$archivo" ]; then
-              echo "OK: existe el archivo $archivo"
-            else
-              echo "AVISO: no se encontro $archivo en la raiz"
-            fi
-          done
-
-      - name: Resumen
-        if: success()
-        run: echo "Todas las validaciones obligatorias finalizaron correctamente"
