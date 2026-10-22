@@ -1,8 +1,12 @@
 # Rinconcito Marino – Gestión de Mariscos
 
-Aplicación web para la venta de mariscos y platos preparados, desarrollada con **Spring Boot**. Permite mostrar un catálogo de productos, armar un carrito de compras y enviar pedidos, además de un formulario de contacto y un acceso de administrador.
+🌐 **Sitio en línea:** [https://gestion-de-mariscos.onrender.com/](https://gestion-de-mariscos.onrender.com/)
 
-> *Del mar a tu mesa, frescura garantizada.* – Lima, Perú
+> El sitio está en el plan gratuito de Render: si estuvo un rato sin visitas, la primera carga puede tardar cerca de un minuto.
+
+*Del mar a tu mesa, frescura garantizada.* – Lima, Perú
+
+Aplicación web para la venta de mariscos y platos preparados, desarrollada con **Spring Boot**. Permite mostrar un catálogo de productos, armar un carrito de compras y enviar pedidos, además de un formulario de contacto y un acceso de administrador.
 
 ---
 
@@ -49,14 +53,27 @@ La aplicación ofrece:
 - Thymeleaf (plantillas)
 
 ### Base de datos
-- **MySQL 8.4** (ejecutado con Docker)
-- **H2** (en memoria, para pruebas locales)
+- **MySQL 8.4** (con Docker Compose)
+- **H2** en memoria (en el despliegue de Render)
 
 ### Herramientas
 - Maven – Gestor de dependencias
 - Docker y Docker Compose – Contenedores
 - GitHub Actions – Automatización
+- Render – Despliegue
 - Git y GitHub – Control de versiones
+
+---
+
+## Despliegue en Render
+
+El proyecto está publicado en Render como un **Web Service con Docker**:
+
+- **Rama:** `dev`
+- **Directorio raíz:** `backend/gestionhotelesbackend`
+- **Dockerfile:** `./Dockerfile`
+- **Base de datos:** H2 en memoria, configurada con variables de entorno (`SPRING_DATASOURCE_*`). Los productos se cargan al iniciar; los pedidos y usuarios nuevos se pierden cuando el servicio se reinicia.
+- **Puerto:** `PORT=8080`
 
 ---
 
@@ -88,13 +105,14 @@ Para ejecutar **sin Docker**:
 ```bash
 git clone https://github.com/AngelHuaman13/Gestion-de-Mariscos.git
 cd Gestion-de-Mariscos
+git checkout dev
 ```
 
-### 2. Opción A: con Docker (recomendada)
+### 2. Opción A: con Docker Compose (recomendada)
 
 Desde la raíz del proyecto:
 ```bash
-docker compose up --build
+docker compose -f docker-compose.mariscos.yaml up --build
 ```
 
 Esto levanta dos contenedores:
@@ -102,18 +120,18 @@ Esto levanta dos contenedores:
 | Servicio | Contenedor | Descripción |
 |----------|-----------|-------------|
 | `db` | `gestion-mysql` | Base de datos MySQL 8.4 con volumen para los datos |
-| `backend` | `gestion-hoteles` | Aplicación Spring Boot, construida con el `DockerFile` |
+| `backend` | `gestion-hoteles` | Aplicación Spring Boot, construida con el `Dockerfile` |
 
 La aplicación estará disponible en: `http://localhost:8080`
 
 Para detenerla:
 ```bash
-docker compose down
+docker compose -f docker-compose.mariscos.yaml down
 ```
 
 Para borrar también los datos de la base:
 ```bash
-docker compose down -v
+docker compose -f docker-compose.mariscos.yaml down -v
 ```
 
 ### 3. Opción B: sin Docker
@@ -129,17 +147,17 @@ Esta opción requiere una base de datos configurada en `application.properties`.
 
 ## Docker
 
-### DockerFile
-Ubicado en `backend/gestionhotelesbackend/DockerFile`. Construye la imagen en dos etapas:
+### Dockerfile
+Ubicado en `backend/gestionhotelesbackend/Dockerfile`. Construye la imagen en dos etapas:
 
 1. **Compilación:** imagen `maven:3.9-eclipse-temurin-21` que genera el `.jar`.
 2. **Ejecución:** imagen liviana `eclipse-temurin:21-jre` que ejecuta la aplicación en el puerto 8080.
 
-### docker-compose.yaml
+### docker-compose.mariscos.yaml
 Ubicado en la raíz del proyecto. Define:
 
 - **`db`:** MySQL con un *healthcheck* para confirmar que está listo antes de arrancar el backend.
-- **`backend`:** se construye con el `DockerFile`, espera a que `db` esté saludable y se conecta a ella mediante variables de entorno (`SPRING_DATASOURCE_*`).
+- **`backend`:** se construye con el `Dockerfile`, espera a que `db` esté saludable y se conecta a ella mediante variables de entorno (`SPRING_DATASOURCE_*`).
 
 ---
 
@@ -147,12 +165,15 @@ Ubicado en la raíz del proyecto. Define:
 
 Los workflows están en `.github/workflows/`. Cada integrante tiene su propia acción:
 
-| Integrante | Workflow | Qué practica |
-|-----------|----------|--------------|
-| Angel Huaman | `accion_1_basico_commits.yml` | Comandos básicos, configuración de Git, commit y push automáticos |
-| Lufer | Acción con `if` y `for` | Condicionales y bucles |
+| # | Integrante | Workflow | Qué practica |
+|---|-----------|----------|--------------|
+| 1 | Angel Huaman | `accion_1_basico_commits.yml` | Comandos básicos, configuración de Git, commit y push automáticos |
+| 2 | Lufer | `accion_2_condicionales_if_bucle_for.yml` | Condicionales y bucles |
+| 3 | Alex Cyber | `accion_3_varios_jobs.yml` | Varios jobs en Ubuntu y Windows |
+| 4 | Diego (Diemox) | `accion_4_matriz_os_version.yml` | Matriz de sistemas operativos y versiones |
+| 5 | Ashi Games | `accion_5_needs_cache.yml` | Jobs encadenados con `needs` y uso de caché |
 
-Cada workflow se ejecuta desde la pestaña **Actions → Run workflow**.
+Cada workflow se ejecuta desde la pestaña **Actions → Run workflow**. La acción 1 deja un registro de cada ejecución en `docs/registro-actions.txt`.
 
 ---
 
@@ -174,10 +195,11 @@ Gestion-de-Mariscos/
 │   │       ├── templates/         # HTML (Thymeleaf)
 │   │       ├── static/            # CSS, JS, imágenes
 │   │       └── application.properties
-│   ├── DockerFile
+│   ├── Dockerfile
 │   └── pom.xml
 ├── database/                      # Scripts de base de datos
-├── docker-compose.yaml
+├── docs/                          # Registro de la acción 1
+├── docker-compose.mariscos.yaml
 └── README.md
 ```
 
@@ -211,3 +233,4 @@ Los cambios se proponen con **Pull Request** hacia `dev` y se revisan antes de u
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
 - [Documentación de Docker](https://docs.docker.com/)
 - [Documentación de GitHub Actions](https://docs.github.com/actions)
+- [Documentación de Render](https://render.com/docs)
