@@ -1,0 +1,5 @@
+# El contexto de build del frontend es la raiz del repositorio.
+# Solo se envia a Docker lo que frontend/Dockerfile necesita.
+*
+!frontend/nginx/
+!backend/gestionhotelesbackend/src/main/resources/static/

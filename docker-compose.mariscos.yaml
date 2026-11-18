@@ -17,7 +17,8 @@ services:
   backend:
     build:
       context: ./backend/gestionhotelesbackend
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
+    image: gestion-mariscos-backend:1.0
     container_name: gestion-hoteles
     ports:
       - "8080:8080"
@@ -30,6 +31,22 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: gestion-mariscos-frontend:1.0
+    container_name: gestion-frontend
+    ports:
+      - "3000:80"
+    environment:
+      BACKEND_URL: http://backend:8080
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+    restart: on-failure
 
 volumes:
   mysql_data:

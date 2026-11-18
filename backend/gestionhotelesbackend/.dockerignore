@@ -1,0 +1,7 @@
+# Archivos que NO se envian a Docker al construir la imagen del backend
+target/
+.idea/
+.vscode/
+*.iml
+*.log
+.git
