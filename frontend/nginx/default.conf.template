@@ -1,0 +1,42 @@
+# =====================================================================
+#  Nginx del frontend - Rinconcito Marino
+#  ${BACKEND_URL} se reemplaza al iniciar el contenedor con el valor de
+#  la variable de entorno BACKEND_URL (por defecto http://backend:8080).
+# =====================================================================
+server {
+    listen 80;
+    server_name _;
+    server_tokens off;
+
+    root /usr/share/nginx/html;
+
+    gzip on;
+    gzip_types text/css text/javascript application/javascript application/json image/svg+xml;
+
+    # Healthcheck del propio Nginx (no depende del backend)
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # Si el archivo existe (css/, js/, img/, icons/, admin-login.html)
+    # lo entrega Nginx; si no, la peticion pasa al backend.
+    location / {
+        try_files $uri @backend;
+    }
+
+    # Paginas Thymeleaf (/, /login, /registro, ...) y API REST (/api/...)
+    location @backend {
+        proxy_pass ${BACKEND_URL};
+        proxy_http_version 1.1;
+
+        # Se reenvia el host:puerto que uso el navegador. Asi Spring no trata
+        # los POST a /api como peticiones CORS y arma bien las redirecciones.
+        # (No se envia X-Forwarded-Proto: en Kubernetes Spring lo usaria y
+        # cambiaria el puerto a 80.)
+        proxy_set_header Host            $http_host;
+        proxy_set_header X-Real-IP       $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
