@@ -1,0 +1,54 @@
+name: CI Gestion de Mariscos
+
+on:
+  push:
+    branches: [main, dev, 'feature/**']
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/gestionhotelesbackend
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Compilar y empaquetar
+        run: mvn -B package
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir imagen backend
+        uses: docker/build-push-action@v6
+        with:
+          context: backend/gestionhotelesbackend
+          file: backend/gestionhotelesbackend/Dockerfile
+          push: false
+          tags: gestion-mariscos-backend:1.0
+
+      - name: Construir imagen frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: false
+          tags: gestion-mariscos-frontend:1.0
