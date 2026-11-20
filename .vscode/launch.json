@@ -2,11 +2,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-GestionHotelesApplication<gestionhotelesbackend>",
+            "name": "Spring Boot - Gestion Mariscos",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.gestionhoteles.backend.GestionHotelesApplication",
-            "projectName": "gestionhotelesbackend",
+            "projectName": "gestion-mariscos-backend",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
