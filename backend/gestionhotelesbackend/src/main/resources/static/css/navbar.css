@@ -157,3 +157,75 @@
         padding-left: 8px;
     }
 }
+
+/* =====================================================================
+ *  TEMA "OCEANO MODERNO" (rama feature/ashi-diseno)
+ * ===================================================================== */
+:root {
+    --bg-header: #0B3C5D;
+    --bg-header-alt: #0B3C5D;
+    --accent-sea: #14B8C4;
+    --accent-sand: #FF6B5B;
+}
+
+/* Navbar fija arriba, translucida con desenfoque */
+div:has(> nav.navbar) {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+.navbar {
+    background: rgba(11, 60, 93, 0.88) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(8, 42, 66, 0.25);
+    padding: 10px 0;
+}
+.navbar::after {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+    opacity: 1;
+}
+
+/* Links con subrayado animado */
+.nav-link {
+    position: relative;
+    border-radius: 999px;
+}
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.10) !important;
+    transform: none;
+}
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-sea);
+    transition: width 0.25s ease, left 0.25s ease;
+}
+.nav-link:hover::after {
+    width: 40%;
+    left: 30%;
+}
+.navbar button.nav-link { background: transparent !important; }
+
+/* Buscador tipo pastilla */
+.nav-search {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.20);
+    border-radius: 999px;
+}
+.nav-search:focus-within {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: var(--accent-sea);
+}
+.navbar .nav-search-input {
+    background: transparent !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+.navbar .nav-search-input::placeholder { color: rgba(255, 255, 255, 0.65) !important; }

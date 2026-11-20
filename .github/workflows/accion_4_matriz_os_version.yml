@@ -9,6 +9,7 @@ jobs:
   matriz:
     name: ${{ matrix.os }} - Java ${{ matrix.version }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -17,15 +18,17 @@ jobs:
     defaults:
       run:
         working-directory: backend/gestionhotelesbackend
+        shell: bash
     steps:
       - name: Descargar codigo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar Java ${{ matrix.version }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: ${{ matrix.version }}
+          cache: maven
 
       - name: Mostrar combinacion de la matriz
         run: |
@@ -33,5 +36,16 @@ jobs:
           echo "Version de Java: ${{ matrix.version }}"
           java -version
 
+      # Si Maven Central falla al entregar una dependencia, se reintenta hasta
+      # 3 veces. -U obliga a Maven a volver a buscar lo que no pudo descargar.
       - name: Compilar backend
-        run: mvn -B clean compile
+        run: |
+          for intento in 1 2 3; do
+            mvn -B -ntp -U clean compile && exit 0
+            if [ "$intento" -lt 3 ]; then
+              echo "::warning::Intento $intento de 3 fallo; se reintenta en 20 s"
+              sleep 20
+            fi
+          done
+          echo "::error::El backend no compilo en 3 intentos"
+          exit 1
