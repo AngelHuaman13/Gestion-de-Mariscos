@@ -1,0 +1,14 @@
+﻿# Respaldos SQL
+*.sql
+backup*.sql
+
+# Imagenes Docker
+*.tar
+
+# Archivos temporales
+mysql-strategy.yaml
+
+# Variables de entorno
+.env
+.env.*
+!.env.example

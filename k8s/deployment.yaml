@@ -1,21 +1,7 @@
-# =====================================================================
-#  Kubernetes - Rinconcito Marino (basado en feature/lufer, corregido
-#  para Docker Desktop). Imagenes locales:
-#    docker build -t gestion-mariscos-backend:1.0 backend/gestionhotelesbackend
-#    docker build -f frontend/Dockerfile -t gestion-mariscos-frontend:1.0 .
-# =====================================================================
 
-# ---------- Secret: clave de MySQL ----------
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-secret
-type: Opaque
-stringData:
-  MYSQL_ROOT_PASSWORD: root123
-
----
-# ---------- PVC: almacenamiento de MySQL ----------
+# ==========================================
+# PVC: Almacenamiento persistente de MySQL
+# ==========================================
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -23,19 +9,23 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: hostpath   # storageClass de Docker Desktop
+  storageClassName: standard
   resources:
     requests:
       storage: 1Gi
 
 ---
-# ---------- Deployment: MySQL ----------
+# ==========================================
+# DEPLOYMENT: Base de datos MySQL
+# ==========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: mysql
@@ -47,7 +37,7 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.4
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 3306
           env:
@@ -63,9 +53,13 @@ spec:
               mountPath: /var/lib/mysql
           readinessProbe:
             exec:
-              command: ["sh", "-c", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$MYSQL_ROOT_PASSWORD\" --silent"]
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD" --silent
             initialDelaySeconds: 15
             periodSeconds: 5
+            timeoutSeconds: 5
             failureThreshold: 12
       volumes:
         - name: mysql-storage
@@ -73,7 +67,9 @@ spec:
             claimName: mysql-pvc
 
 ---
-# ---------- Deployment: Backend Spring Boot ----------
+# ==========================================
+# DEPLOYMENT: Backend Spring Boot
+# ==========================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -91,8 +87,15 @@ spec:
       initContainers:
         - name: wait-for-mysql
           image: mysql:8.4
-          imagePullPolicy: IfNotPresent
-          command: ["sh", "-c", "until mysqladmin ping -h db -uroot -p\"$MYSQL_ROOT_PASSWORD\" --silent; do echo 'Esperando a MySQL...'; sleep 3; done"]
+          imagePullPolicy: Never
+          command:
+            - sh
+            - -c
+            - |
+              until mysqladmin ping -h db -uroot -p"$MYSQL_ROOT_PASSWORD" --silent; do
+                echo "Esperando a MySQL..."
+                sleep 3
+              done
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -101,7 +104,7 @@ spec:
                   key: MYSQL_ROOT_PASSWORD
       containers:
         - name: backend
-          image: gestion-mariscos-backend:1.0
+          image: gestion-de-mariscos-backend:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -122,9 +125,8 @@ spec:
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 5
-
 ---
-# ---------- Deployment: Frontend Nginx ----------
+# Deployment: Frontend Nginx
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -147,4 +149,4 @@ spec:
             - containerPort: 80
           env:
             - name: BACKEND_URL
-              value: http://backend:8080
+              value: "http://backend:8080"
