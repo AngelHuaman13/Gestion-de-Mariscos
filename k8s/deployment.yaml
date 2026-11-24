@@ -9,7 +9,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: hostpath
   resources:
     requests:
       storage: 1Gi
@@ -37,7 +37,7 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.4
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3306
           env:
@@ -87,7 +87,7 @@ spec:
       initContainers:
         - name: wait-for-mysql
           image: mysql:8.4
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           command:
             - sh
             - -c
@@ -104,8 +104,8 @@ spec:
                   key: MYSQL_ROOT_PASSWORD
       containers:
         - name: backend
-          image: gestion-de-mariscos-backend:latest
-          imagePullPolicy: Never
+          image: gestion-mariscos-backend:1.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
@@ -144,7 +144,7 @@ spec:
       containers:
         - name: frontend
           image: gestion-mariscos-frontend:1.0
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:

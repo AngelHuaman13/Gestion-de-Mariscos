@@ -48,6 +48,9 @@ public class Pedido {
 
     private String direccion;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean solicitarLlamada;
+
     @NotBlank
     @Pattern(regexp = "Recojo en tienda|Delivery")
     private String tipoEntrega;

@@ -483,3 +483,15 @@ button:hover { background: var(--sea-accent) !important; }
     border-radius: 28px 28px 0 0;
     padding: 3rem 1.5rem !important;
 }
+
+/* Reserva de mesa: formulario destacado y adaptable a pantallas pequeñas. */
+.reserva-section { scroll-margin-top: 100px; padding-block: clamp(1rem, 4vw, 3rem); }
+.reserva-eyebrow { color: var(--coral, #ff6b5b); font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.reserva-section .section-title { margin-bottom: 1rem; }
+.reserva-promise { display: flex; align-items: flex-start; gap: .85rem; max-width: 440px; margin-top: 1.5rem; color: var(--sea-deep); font-weight: 600; }
+.reserva-promise i { display: grid; width: 2.5rem; height: 2.5rem; flex: 0 0 2.5rem; place-items: center; border-radius: 50%; background: #e2f7f7; color: var(--sea-deep); }
+.reserva-card { padding: clamp(1.2rem, 3vw, 2rem); border: 1px solid rgba(11, 60, 93, .08); border-radius: 24px; background: #fff; box-shadow: var(--shadow-md, 0 14px 34px rgba(11, 60, 93, .12)); }
+.reserva-card .form-control, .reserva-card .form-select { min-height: 46px; border: 1px solid #dce7ec !important; border-radius: 10px; background: #f8fbfc !important; }
+.reserva-card textarea.form-control { min-height: auto; }
+.reserva-card .form-control:focus, .reserva-card .form-select:focus { border-color: var(--sea-accent) !important; background: #fff !important; box-shadow: 0 0 0 .2rem rgba(20, 184, 196, .18) !important; }
+#checkoutForm[hidden] { display: none !important; }

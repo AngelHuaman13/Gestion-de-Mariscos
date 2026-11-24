@@ -234,3 +234,7 @@ Los cambios se proponen con **Pull Request** hacia `dev` y se revisan antes de u
 - [Documentación de Docker](https://docs.docker.com/)
 - [Documentación de GitHub Actions](https://docs.github.com/actions)
 - [Documentación de Render](https://render.com/docs)
+
+## Mejoras de pedidos y reservas
+
+Consulta [docs/mejoras-pedidos-reservas.md](docs/mejoras-pedidos-reservas.md) para ver el nuevo flujo de delivery, recojo, solicitud de llamada y reservas pendientes de confirmación.

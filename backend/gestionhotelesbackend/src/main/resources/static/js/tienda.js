@@ -81,13 +81,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function cartAction(label, action) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('click', action); return b; }
   document.getElementById('clearCart').addEventListener('click', () => { cartItems.length = 0; renderCart(); });
-  document.getElementById('checkoutButton').addEventListener('click', () => { document.getElementById('checkoutForm').hidden = false; document.getElementById('orderMessage').textContent = ''; });
+  const deliverySelect = document.getElementById('orderDelivery');
+  const addressWrap = document.getElementById('deliveryAddressWrap');
+  const addressInput = document.getElementById('orderAddress');
+  const pickupNote = document.getElementById('pickupNote');
+  function syncDeliveryFields() {
+    const needsAddress = deliverySelect.value === 'Delivery';
+    addressWrap.hidden = !needsAddress;
+    pickupNote.hidden = needsAddress;
+    addressInput.required = needsAddress;
+  }
+  deliverySelect.addEventListener('change', syncDeliveryFields);
+  syncDeliveryFields();
+  document.getElementById('checkoutButton').addEventListener('click', () => { document.getElementById('checkoutForm').hidden = false; document.getElementById('orderMessage').textContent = ''; syncDeliveryFields(); });
   document.getElementById('checkoutForm').addEventListener('submit', async event => {
     event.preventDefault(); const form = event.currentTarget; if (!form.reportValidity() || cartItems.length === 0) return;
     const message = document.getElementById('orderMessage');
-    const payload = { nombreCliente: document.getElementById('orderName').value.trim(), telefono: document.getElementById('orderPhone').value.trim(), tipoEntrega: document.getElementById('orderDelivery').value, items: cartItems.map(({ idProducto, cantidad }) => ({ idProducto, cantidad })) };
-    try { const result = await request(`${api}/pedidos`, { method: 'POST', body: JSON.stringify(payload) }); message.className = 'text-success mt-2'; message.textContent = `Pedido #${result.idPedido} registrado. Total: ${money(result.total)}.`; cartItems.length = 0; renderCart(); form.reset(); loadProducts(document.getElementById('searchInput').value.trim()); }
-    catch (error) { message.className = 'text-danger mt-2'; message.textContent = error.message; }
+    const submit = form.querySelector('button[type="submit"], button:not([type])');
+    const payload = { nombreCliente: document.getElementById('orderName').value.trim(), telefono: document.getElementById('orderPhone').value.trim(), tipoEntrega: deliverySelect.value, direccion: deliverySelect.value === 'Delivery' ? addressInput.value.trim() : '', solicitarLlamada: document.getElementById('orderCallBack').checked, items: cartItems.map(({ idProducto, cantidad }) => ({ idProducto, cantidad })) };
+    submit.disabled = true;
+    try {
+      const result = await request(`${api}/pedidos`, { method: 'POST', body: JSON.stringify(payload) });
+      message.className = 'text-success mt-2';
+      message.textContent = `Pedido #${result.idPedido} recibido. Estado: ${result.estado}. ${payload.solicitarLlamada ? 'Registramos tu solicitud de llamada para confirmar.' : 'El local debe confirmar la disponibilidad.'}`;
+      cartItems.length = 0; renderCart(); form.reset(); syncDeliveryFields(); loadProducts(document.getElementById('searchInput').value.trim());
+    } catch (error) { message.className = 'text-danger mt-2'; message.textContent = error.message; }
+    finally { submit.disabled = false; }
+  });
+
+  const reservationForm = document.getElementById('reservationForm');
+  const reservationDate = document.getElementById('reservationDate');
+  const localNow = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+  reservationDate.min = localNow.toISOString().slice(0, 16);
+  reservationForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!reservationForm.reportValidity()) return;
+    const message = document.getElementById('reservationMessage');
+    const submit = document.getElementById('reservationSubmit');
+    const requestedDate = new Date(reservationDate.value);
+    if (requestedDate <= new Date()) { message.className = 'small text-danger'; message.textContent = 'Elige una fecha y hora futuras.'; return; }
+    const payload = { nombre: document.getElementById('reservationName').value.trim(), telefono: document.getElementById('reservationPhone').value.trim(), fechaHora: reservationDate.value, personas: Number(document.getElementById('reservationGuests').value), comentario: document.getElementById('reservationNote').value.trim() };
+    submit.disabled = true;
+    try {
+      const result = await request(`${api}/reservas`, { method: 'POST', body: JSON.stringify(payload) });
+      message.className = 'small text-success';
+      message.textContent = `Solicitud #${result.idReserva} recibida. La reserva está pendiente de confirmación por teléfono.`;
+      reservationForm.reset();
+    } catch (error) { message.className = 'small text-danger'; message.textContent = error.message; }
+    finally { submit.disabled = false; }
   });
 
   document.getElementById('toggleAdmin').addEventListener('click', () => { const section = document.getElementById('adminSection'); section.hidden = !section.hidden; if (!section.hidden) section.scrollIntoView({ behavior: 'smooth' }); });
